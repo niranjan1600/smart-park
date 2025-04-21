@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Smart Parking - Available Spots</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #1e90ff;
+      color: white;
+      margin: 0;
+      padding: 0;
+    }
+    header, footer {
+      background-color: #0f68c9;
+      padding: 1em;
+      text-align: center;
+    }
+    .nav-button {
+      background: #0f68c9;
+      border: none;
+      color: white;
+      padding: 8px 12px;
+      border-radius: 5px;
+      margin: 0 5px;
+      cursor: pointer;
+    }
+    main {
+      padding: 20px;
+    }
+    .hidden {
+      display: none;
+    }
+    .grid-container {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr); /* 5 boxes per row */
+      gap: 20px;
+      padding: 20px;
+    }
+    .spot-box {
+      background-color: #333;
+      padding: 20px;
+      border-radius: 10px;
+      text-align: center;
+      color: white;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      transition: transform 0.3s ease;
+    }
+    .spot-box:hover {
+      transform: scale(1.05);
+    }
+    .available {
+      background-color: green;
+      color: white;
+    }
+    .unavailable {
+      background-color: red;
+      color: white;
+    }
+    .spot-box button {
+      background-color: #0f68c9;
+      border: none;
+      padding: 10px 15px;
+      color: white;
+      cursor: pointer;
+      border-radius: 5px;
+      margin-top: 10px;
+    }
+    .spot-box button:disabled {
+      background-color: #ccc;
+    }
+    .cancel-button {
+      background-color: red;
+      padding: 10px 20px;
+      margin-top: 10px;
+      cursor: pointer;
+      border-radius: 5px;
+      width: 100%;
+    }
+    .login-form input {
+      margin: 10px 0;
+      padding: 10px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+      width: 80%;
+    }
+    .login-form button {
+      background-color: #0f68c9;
+      border: none;
+      color: white;
+      padding: 10px 15px;
+      border-radius: 5px;
+      width: 80%;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>Smart Parking</h1>
+    <button class="nav-button" onclick="showPage('home')">Home</button>
+    <button class="nav-button" onclick="showPage('spots')">Available Spots</button>
+    <button class="nav-button" onclick="logout()">Logout</button>
+  </header>
+
+  <main>
+    <section id="login" class="hidden">
+      <h2>Login</h2>
+      <form class="login-form" onsubmit="login(event)">
+        <input type="text" id="username" placeholder="Username" required />
+        <input type="password" id="password" placeholder="Password" required />
+        <button type="submit">Login</button>
+      </form>
+    </section>
+
+    <section id="home" class="hidden">
+      <h2>Welcome!</h2>
+      <p>Click on "Available Spots" to see and book parking slots.</p>
+    </section>
+
+    <section id="spots" class="hidden">
+      <h2>Available Parking Spots</h2>
+      <div class="grid-container" id="spots-grid">
+        <!-- Available parking spots will be injected here -->
+      </div>
+    </section>
+
+    <section id="booking" class="hidden">
+      <h2>Book Slot</h2>
+      <form id="booking-form">
+        <input type="text" id="name" placeholder="Your Name" required />
+        <input type="text" id="vehicle" placeholder="Vehicle Number" required />
+        <input type="datetime-local" id="datetime" required />
+        <button type="submit">Proceed to Payment</button>
+      </form>
+    </section>
+
+    <section id="confirmation" class="hidden">
+      <h2>Booking Confirmed!</h2>
+      <p>Your booking is confirmed. You can cancel your booking anytime.</p>
+      <button id="cancel-button" class="cancel-button" onclick="cancelBooking()">Cancel Booking</button>
+    </section>
+  </main>
+
+  <footer>
+    &copy; 2025 Smart Parking
+  </footer>
+
+  <script>
+    let loggedIn = false;
+    let parkingSpots = [
+      { id: 1, name: 'Zone A - Slot 1', status: 'available' },
+      { id: 2, name: 'Zone A - Slot 2', status: 'available' },
+      { id: 3, name: 'Zone A - Slot 3', status: 'unavailable' },
+      { id: 4, name: 'Zone A - Slot 4', status: 'available' },
+      { id: 5, name: 'Zone A - Slot 5', status: 'unavailable' },
+      { id: 6, name: 'Zone B - Slot 6', status: 'available' },
+      { id: 7, name: 'Zone B - Slot 7', status: 'unavailable' },
+      { id: 8, name: 'Zone B - Slot 8', status: 'available' },
+      { id: 9, name: 'Zone C - Slot 9', status: 'available' },
+      { id: 10, name: 'Zone C - Slot 10', status: 'available' }
+    ];
+
+    function login(event) {
+      event.preventDefault();
+      const username = document.getElementById('username').value;
+      const password = document.getElementById('password').value;
+      
+      // Simple username and password check
+      if (username === 'user' && password === 'password') {
+        loggedIn = true;
+        alert('Login successful!');
+        showPage('spots');
+        displayParkingSpots();
+      } else {
+        alert('Invalid username or password!');
+      }
+    }
+
+    function logout() {
+      loggedIn = false;
+      showPage('login');
+    }
+
+    function displayParkingSpots() {
+      const spotsGrid = document.getElementById('spots-grid');
+      spotsGrid.innerHTML = ''; // Clear any existing spots
+
+      parkingSpots.forEach(spot => {
+        const spotBox = document.createElement('div');
+        spotBox.classList.add('spot-box');
+        spotBox.classList.add(spot.status === 'available' ? 'available' : 'unavailable');
+
+        spotBox.innerHTML = `
+          <h3>${spot.name}</h3>
+          <p>Status: <strong>${spot.status}</strong></p>
+          <button onclick="bookSpot(${spot.id})" ${spot.status === 'unavailable' ? 'disabled' : ''}>Book Now</button>
+        `;
+        
+        // If the spot is booked, show the cancel button under the "Book Now" button
+        if (spot.status === 'unavailable') {
+          spotBox.innerHTML += `
+            <button class="cancel-button" onclick="cancelBooking(${spot.id})">Cancel Booking</button>
+          `;
+        }
+
+        spotsGrid.appendChild(spotBox);
+      });
+    }
+
+    function bookSpot(spotId) {
+      const spot = parkingSpots.find(s => s.id === spotId);
+      if (spot.status === 'available') {
+        spot.status = 'unavailable'; // Mark the spot as unavailable after booking
+        alert(`Successfully booked ${spot.name}`);
+        displayParkingSpots(); // Refresh the grid to show updated status
+      }
+    }
+
+    function cancelBooking(spotId) {
+      const spot = parkingSpots.find(s => s.id === spotId);
+      if (spot && spot.status === 'unavailable') {
+        spot.status = 'available'; // Reset the spot to available
+        alert(`Booking for ${spot.name} has been cancelled.`);
+        displayParkingSpots(); // Refresh the grid to show updated status
+      }
+    }
+
+    function showPage(pageId) {
+      ['home', 'spots', 'booking', 'confirmation', 'login'].forEach(id => {
+        document.getElementById(id).classList.add('hidden');
+      });
+      document.getElementById(pageId).classList.remove('hidden');
+    }
+
+    // Show login page on initial load
+    showPage('login');
+  </script>
+
+</body>
+</html>

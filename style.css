@@ -1,0 +1,157 @@
+/* Base Styles */
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  background: #f2f2f2;
+  color: #333;
+}
+
+/* Dark Mode */
+body.dark-mode {
+  background: #1e1e1e;
+  color: #eee;
+}
+
+/* Dark Mode Button */
+#darkModeBtn {
+  position: fixed;
+  top: 10px;
+  right: 10px;
+  background: #444;
+  color: #fff;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 20px;
+  cursor: pointer;
+  z-index: 999;
+}
+
+body.dark-mode #darkModeBtn {
+  background: #eee;
+  color: #111;
+}
+
+/* Container */
+.container {
+  max-width: 1000px;
+  margin: auto;
+  padding: 20px;
+}
+
+/* Slot Layout */
+#parkingArea {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  justify-content: center;
+}
+
+.slot {
+  background: #fff;
+  border: 2px solid #000000;
+  border-radius: 8px;
+  padding: 15px;
+  width: 220px;
+  box-sizing: border-box;
+  transition: background 0.3s, border-color 0.3s;
+}
+
+body.dark-mode .slot {
+  background: #2c2c2c;
+  border-color: #555;
+}
+
+/* Admin Panel */
+#adminPanel {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+#adminPanel div {
+  background: #5b0101;
+  padding: 15px;
+  border: 1px solid #310101;
+  border-radius: 6px;
+}
+
+body.dark-mode #adminPanel div {
+  background: #2a2a2a;
+  border-color: #444;
+}
+
+/* Responsive for mobile */
+@media (max-width: 600px) {
+  .slot {
+    width: 90%;
+  }
+
+  #darkModeBtn {
+    top: 5px;
+    right: 5px;
+    padding: 8px 12px;
+    font-size: 14px;
+  }
+}
+/* Base Slot Styling */
+.slot {
+  padding: 15px;
+  margin: 10px;
+  border-radius: 10px;
+  color: #00c8ff;
+  font-weight: bold;
+  text-align: center;
+  transition: background 0.3s;
+}
+
+/* Status Indicators */
+.slot.available {
+  background-color: #2ecc71; /* green */
+}
+
+.slot.booked {
+  background-color: #e74c3c; /* red */
+}
+
+.slot.expiring {
+  background-color: #f1c40f; /* yellow */
+  color: #000;
+}
+/* Chart Containers */
+#usageChart, #revenueChart {
+  width: 100%;
+  height: 300px;
+  margin-top: 20px;
+}
+ 
+.slot-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.slot {
+  border-radius: 8px;
+  padding: 15px;
+  width: 180px;
+  color: #fff;
+  font-weight: bold;
+  text-align: center;
+  transition: 0.3s ease;
+}
+
+/* Status colors */
+.slot.available {
+  background-color: #2ecc71; /* green */
+}
+
+.slot.booked {
+  background-color: #e74c3c; /* red */
+}
+
+.slot.expiring {
+  background-color: #f1c40f; /* yellow */
+  color: #000;
+}
+
